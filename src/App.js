@@ -1,25 +1,32 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import cloneDeep from 'lodash.clonedeep';
+import { css } from 'react-emotion';
+
+import Board from './components/Board';
+
+const ROWS = 3;
+const COLUMNS = 3;
+const ROW_ARR = new Array(ROWS).fill('');
+const COL_ARR = new Array(COLUMNS).fill('');
+const GRID = ROW_ARR.map(x => COL_ARR.slice());
+
+const appStyle = css({
+  textAlign: 'center',
+});
 
 class App extends Component {
+  state = {
+    grid: cloneDeep(GRID),
+  }
+
   render() {
+    const { grid } = this.state;
+    console.log(grid);
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div className={appStyle}>
+        <h1>Tic Tac Toe</h1>
+        <Board rows={grid} />
       </div>
     );
   }
