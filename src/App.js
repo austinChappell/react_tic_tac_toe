@@ -16,7 +16,23 @@ const appStyle = css({
 
 class App extends Component {
   state = {
+    currentValue: 'X',
     grid: cloneDeep(GRID),
+  }
+
+  handleClick = ({ columnIndex, rowIndex }) => {
+    console.log('clicked', columnIndex, rowIndex);
+    const {
+      currentValue,
+      grid,
+    } = this.state;
+    const clonedGrid = cloneDeep(grid);
+    const nextValue = currentValue === 'X' ? 'O' : 'X';
+    clonedGrid[rowIndex][columnIndex] = currentValue;
+    this.setState({
+      currentValue: nextValue,
+      grid: clonedGrid,
+    });
   }
 
   render() {
@@ -26,7 +42,10 @@ class App extends Component {
     return (
       <div className={appStyle}>
         <h1>Tic Tac Toe</h1>
-        <Board rows={grid} />
+        <Board
+          onClick={this.handleClick}
+          rows={grid}
+        />
       </div>
     );
   }
