@@ -10,6 +10,12 @@ const ROW_ARR = new Array(ROWS).fill('');
 const COL_ARR = new Array(COLUMNS).fill('');
 const GRID = ROW_ARR.map(x => COL_ARR.slice());
 const MIN_TO_WIN = 3;
+const INITIAL_STATE = {
+  currentValue: 'X',
+  grid: cloneDeep(GRID),
+  hasWon: false,
+  hasWonMessage: null,
+};
 
 const appStyle = css({
   textAlign: 'center',
@@ -79,14 +85,13 @@ const flattenAndFilterArrays = (grid) => {
 }
 
 const mapGridIndexes = ({ grid, value }) => {
-  const mappedItems = grid.map((row, rowIndex) => {
-    return row.map((col, colIndex) => {
+  const mappedItems = grid.map((row, rowIndex) => row.map((col, colIndex) => {
       return col === value && {
         colIndex,
         rowIndex,
       }
     })
-  })
+  )
   return flattenAndFilterArrays(mappedItems);
 }
 
@@ -101,15 +106,9 @@ const checkWin = ({ gridItems, winString }) => {
 }
 
 class App extends Component {
-  state = {
-    currentValue: 'X',
-    grid: cloneDeep(GRID),
-    hasWon: false,
-    hasWonMessage: null,
-  }
+  state = cloneDeep(INITIAL_STATE);
 
   handleClick = ({ columnIndex, rowIndex }) => {
-    console.log('clicked', columnIndex, rowIndex);
     const {
       currentValue,
       grid,
@@ -121,7 +120,6 @@ class App extends Component {
       clonedGrid[rowIndex][columnIndex] = currentValue;
       const gridItems = mapGridIndexes({ grid: clonedGrid, value: currentValue });
       const hasWon = checkWin({ gridItems, winString: MIN_TO_WIN });
-      console.log({ hasWon });
       this.setState({
         currentValue: nextValue,
         grid: clonedGrid,
@@ -132,8 +130,11 @@ class App extends Component {
   }
 
   render() {
-    const { grid, hasWonMessage } = this.state;
-    console.log(grid);
+    const {
+      grid,
+      hasWon,
+      hasWonMessage,
+    } = this.state;
 
     return (
       <div className={appStyle}>
@@ -143,9 +144,18 @@ class App extends Component {
           rows={grid}
         />
 
-        <h2>
-          {hasWonMessage}
-        </h2>
+        <button
+          onClick={() => this.setState(cloneDeep(INITIAL_STATE))}
+        >
+          Reset
+        </button>
+
+        {hasWon && (
+          <h2>
+            {hasWonMessage}
+          </h2>
+        )}
+
       </div>
     );
   }
