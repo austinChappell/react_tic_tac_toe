@@ -104,6 +104,8 @@ class App extends Component {
   state = {
     currentValue: 'X',
     grid: cloneDeep(GRID),
+    hasWon: false,
+    hasWonMessage: null,
   }
 
   handleClick = ({ columnIndex, rowIndex }) => {
@@ -111,21 +113,26 @@ class App extends Component {
     const {
       currentValue,
       grid,
+      hasWon: gameOver,
     } = this.state;
-    const clonedGrid = cloneDeep(grid);
-    const nextValue = currentValue === 'X' ? 'O' : 'X';
-    clonedGrid[rowIndex][columnIndex] = currentValue;
-    const gridItems = mapGridIndexes({ grid: clonedGrid, value: currentValue });
-    const hasWon = checkWin({ gridItems, winString: MIN_TO_WIN });
-    console.log({ hasWon });
-    this.setState({
-      currentValue: nextValue,
-      grid: clonedGrid,
-    });
+    if (!gameOver) {
+      const clonedGrid = cloneDeep(grid);
+      const nextValue = currentValue === 'X' ? 'O' : 'X';
+      clonedGrid[rowIndex][columnIndex] = currentValue;
+      const gridItems = mapGridIndexes({ grid: clonedGrid, value: currentValue });
+      const hasWon = checkWin({ gridItems, winString: MIN_TO_WIN });
+      console.log({ hasWon });
+      this.setState({
+        currentValue: nextValue,
+        grid: clonedGrid,
+        hasWon,
+        hasWonMessage: hasWon ? `Player ${currentValue} has won!` : null,
+      });
+    }
   }
 
   render() {
-    const { grid } = this.state;
+    const { grid, hasWonMessage } = this.state;
     console.log(grid);
 
     return (
@@ -135,6 +142,10 @@ class App extends Component {
           onClick={this.handleClick}
           rows={grid}
         />
+
+        <h2>
+          {hasWonMessage}
+        </h2>
       </div>
     );
   }
