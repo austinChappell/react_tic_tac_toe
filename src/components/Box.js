@@ -30,7 +30,11 @@ const Box = ({
   return (
     <div
       className={boxStyle}
-      onClick={() => onClick(indexes)}
+      onClick={() => {
+        if (!value) {
+          onClick(indexes)
+        }
+      }}
     >
       {value}
     </div>
